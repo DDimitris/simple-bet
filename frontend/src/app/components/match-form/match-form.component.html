@@ -1,0 +1,92 @@
+<div class="container">
+  <h2>{{ match.id ? "Edit Match" : "Create Match" }}</h2>
+
+  <form #form="ngForm" (ngSubmit)="submit()">
+    <div class="form-group">
+      <label>Description</label>
+      <input
+        [(ngModel)]="match.description"
+        class="form-control"
+        name="description"
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Team A</label>
+      <input
+        [(ngModel)]="match.teamA"
+        class="form-control"
+        name="teamA"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Team B</label>
+      <input
+        [(ngModel)]="match.teamB"
+        class="form-control"
+        name="teamB"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Date</label>
+      <input
+        [(ngModel)]="match.matchDate"
+        class="form-control"
+        name="matchDate"
+        required
+        type="date"
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Time</label>
+      <input
+        [(ngModel)]="match.matchTime"
+        class="form-control"
+        name="matchTime"
+        required
+        type="time"
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Sport</label>
+      <select [(ngModel)]="match.sport" class="form-control" name="sport">
+        <option value="FOOTBALL">Football</option>
+        <option value="BASKETBALL">Basketball</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Odds</label>
+      <div *ngFor="let odd of match.odds; let i = index" class="row mb-2">
+        <div class="col">
+          <input
+            [(ngModel)]="odd.specifier"
+            [readonly]="true"
+            class="form-control"
+            name="specifier{{ i }}"
+          />
+        </div>
+        <div class="col">
+          <input
+            [(ngModel)]="odd.odd"
+            class="form-control"
+            name="odd{{ i }}"
+            step="0.01"
+            type="number"
+          />
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-success" type="submit">Save</button>
+    <button (click)="cancel()" class="btn btn-secondary" type="button">
+      Cancel
+    </button>
+  </form>
+</div>

@@ -1,0 +1,85 @@
+<div class="container">
+  <h2>Matches</h2>
+
+  <button (click)="goToCreate()" class="btn btn-primary">+ Create Match</button>
+
+  <table class="table table-striped mt-3">
+    <thead>
+    <tr>
+      <th (click)="sort('description')">
+        Description
+        <span *ngIf="sortBy === 'description'">
+            {{ direction === "ASC" ? "▲" : "▼" }}
+          </span>
+      </th>
+      <th (click)="sort('teamA')">
+        Team A
+        <span *ngIf="sortBy === 'teamA'">
+            {{ direction === "ASC" ? "▲" : "▼" }}
+          </span>
+      </th>
+      <th (click)="sort('teamB')">
+        Team B
+        <span *ngIf="sortBy === 'teamB'">
+            {{ direction === "ASC" ? "▲" : "▼" }}
+          </span>
+      </th>
+      <th (click)="sort('matchDate')">
+        Date
+        <span *ngIf="sortBy === 'matchDate'">
+            {{ direction === "ASC" ? "▲" : "▼" }}
+          </span>
+      </th>
+      <th (click)="sort('matchTime')">
+        Time
+        <span *ngIf="sortBy === 'matchTime'">
+            {{ direction === "ASC" ? "▲" : "▼" }}
+          </span>
+      </th>
+      <th (click)="sort('sport')">
+        Sport
+        <span *ngIf="sortBy === 'sport'">
+            {{ direction === "ASC" ? "▲" : "▼" }}
+          </span>
+      </th>
+      <th>Odds</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let match of matches">
+      <td>{{ match.description }}</td>
+      <td>{{ match.teamA }}</td>
+      <td>{{ match.teamB }}</td>
+      <td>{{ match.matchDate }}</td>
+      <td>{{ match.matchTime }}</td>
+      <td>{{ match.sport }}</td>
+      <td>
+        <div *ngFor="let odd of match.odds">
+          {{ odd.specifier }}: {{ odd.odd }}
+        </div>
+      </td>
+      <td>
+        <button (click)="goToEdit(match.id)" class="btn btn-sm btn-warning">
+          Edit
+        </button>
+        <button
+          (click)="deleteMatch(match.id!)"
+          class="btn btn-sm btn-danger"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button (click)="prevPage()" [disabled]="page === 0" class="btn btn-light">
+      Prev
+    </button>
+    <span> Page {{ page + 1 }} </span>
+    <button (click)="nextPage()" class="btn btn-light">Next</button>
+  </div>
+</div>

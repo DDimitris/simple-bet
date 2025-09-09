@@ -1,0 +1,13 @@
+th {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 20px;
+}
+th span {
+  position: absolute;
+  right: 5px; 
+}
+th:hover {
+  background-color: #f2f2f2;
+}
