@@ -17,6 +17,6 @@ public class OpenAPIConfig {
                         .title("Simple Bet Service API")
                         .version("0.0.1")
                         .license(new License().name("Apache 2.0"))
-                        .description("API for managing simple bets in the simple bet service")).externalDocs(new ExternalDocumentation().description("You can refer to the github page README.md for more information").url("https://google.com"));
+                        .description("API for managing simple bets in the simple bet service")).externalDocs(new ExternalDocumentation().description("You can refer to the github page README.md for more information").url("https://github.com/DDimitris/simple-bet"));
     }
 }
