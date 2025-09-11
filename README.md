@@ -163,3 +163,47 @@ To stop and remove containers, networks, and volumes:
 ```bash
 docker-compose down -v
 ```
+---
+
+## 🧪 Testing
+
+The project includes both **unit tests** and **integration tests**.
+
+---
+
+### ▶️ Running Tests
+
+Run all tests:
+
+```bash
+mvn test
+```
+
+Run only **unit tests**:
+
+```bash
+mvn test -Dgroups=unit
+```
+
+Run only **integration tests**:
+
+```bash
+mvn test -Dgroups=integration
+```
+
+---
+
+### 🔧 Notes
+
+* Integration tests require Docker, since they use Testcontainers to start PostgreSQL.
+* Tests rely on JUnit 5 tags (`@Tag("unit")`, `@Tag("integration")`) for filtering.
+
+
+Tools used:
+
+  * **Mockito** for mocking
+  * **Spring MockMvc** for controller tests
+  * **RestAssured** for integration tests
+  * **Testcontainers** for PostgreSQL
+
+---
