@@ -58,6 +58,8 @@ export class MatchListComponent implements OnInit {
   }
 
   goToEdit(id?: number): void {
-    if (id) this.router.navigate(['/matches', id, 'edit']);
+    if (id) this.router.navigate(['/matches', id, 'edit'],
+      { state: { pageNumber: this.page } }
+    );
   }
 }

@@ -11,6 +11,12 @@ This project contains:
 
 ## 🚀 How to Run
 
+### Prerequisites
+
+Make sure you have **Docker** and **Docker Compose** installed on your machine.
+
+---
+
 ### 1. Clone the repository
 
 ```bash
@@ -18,17 +24,40 @@ git clone git@github.com:DDimitris/simple-bet.git
 cd simple-bet
 ```
 
-### 2. Build and start all services with Docker Compose
+---
+
+### 2. Build and start all services locally (Docker Compose + local build)
 
 ```bash
-docker-compose up --build -d
+docker-compose -f docker-compose-dev.yml up --build -d
 ```
 
-This will start:
+This will build the backend and frontend images from the Dockerfiles and start all services:
 
 * **Postgres** on port `5432`
 * **Backend (Spring Boot)** on port `8081`
-* **Frontend (Angular + Nginx)** on port `4200`
+* **Frontend (Angular + Nginx)** on port `4200` → available at [http://localhost:4200](http://localhost:4200)
+
+---
+
+### 3. Start all services using pre-built images (Docker Compose + remote images)
+
+```bash
+docker-compose up -d
+```
+
+This uses the default `docker-compose.yml` which pulls the pre-built images from the GitHub Container Registry:
+
+* **Postgres** on port `5432`
+* **Backend (Spring Boot)** on port `8081`
+* **Frontend (Angular + Nginx)** on port `4200` → available at [http://localhost:4200](http://localhost:4200)
+
+> If you want to make sure you have the latest images, you can manually pull them first:
+>
+> ```bash
+> docker pull ghcr.io/ddimitris/simple-bet-backend:latest
+> docker pull ghcr.io/ddimitris/simple-bet-frontend:latest
+> ```
 
 ---
 

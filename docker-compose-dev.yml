@@ -22,7 +22,9 @@ services:
     - "5051:80"
 
   backend:
-    image: ghcr.io/ddimitris/simple-bet-backend:latest
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
     container_name: simple-bet-backend
     depends_on:
       - postgres
@@ -34,7 +36,9 @@ services:
       - "8081:8081"
 
   frontend:
-    image: ghcr.io/ddimitris/simple-bet-frontend:latest
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
     container_name: simple-bet-frontend
     depends_on:
       - backend

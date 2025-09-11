@@ -32,8 +32,10 @@ export class MatchFormComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
+    const pageNumber = history.state.pageNumber;
+    console.log('Page number:', pageNumber);
     if (id) {
-      this.matchService.getMatches(0, 5, 'id', 'ASC').subscribe(res => {
+      this.matchService.getMatches(pageNumber, 5, 'id', 'ASC').subscribe(res => {
         const match = res.content.find((m: Match) => m.id == +id);
         if (match) this.match = match;
       });
