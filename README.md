@@ -1,4 +1,5 @@
 # Simple Betting App – Fullstack with Docker Compose
+![Build & Tests](https://github.com/DDimitris/simple-bet/actions/workflows/maven.yml/badge.svg)
 
 This project contains:
 
@@ -140,7 +141,7 @@ Delete a match by ID.
 
 * Frontend: [http://localhost:4200](http://localhost:4200)
 * Backend API: [http://localhost:8081/api/matches](http://localhost:8081/api/matches)
-* PostgreSQL: `localhost:5432` (DB: `betting`, user: `postgres`, password: `postgres`)
+* PostgreSQL: `localhost:5432` (DB: `postgres`, Schema: `matches_service`, user: `postgres`, password: `postgres`)
 * Swagger UI: [http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)
 
 ---
@@ -207,3 +208,18 @@ Tools used:
   * **Testcontainers** for PostgreSQL
 
 ---
+
+## ⚙️ Continuous Integration (CI)
+
+This project uses **GitHub Actions** to automatically run tests on every push and pull request.
+
+* Ensures that both **unit tests** and **integration tests** pass before merging.
+* Runs in a clean environment with **Java + Maven + Docker** support (required for Testcontainers).
+
+### 🚀 Workflow
+
+The workflow file is located in:
+
+```
+.github/workflows/maven.yml
+```
