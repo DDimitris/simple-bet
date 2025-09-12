@@ -32,11 +32,7 @@ cd simple-bet
 docker-compose -f docker-compose-dev.yml up --build -d
 ```
 
-This will build the backend and frontend images from the Dockerfiles and start all services:
-
-* **Postgres** on port `5432`
-* **Backend (Spring Boot)** on port `8081`
-* **Frontend (Angular + Nginx)** on port `4200` → available at [http://localhost:4200](http://localhost:4200)
+This will build the backend and frontend images from the Dockerfiles and start all services
 
 ---
 
@@ -46,18 +42,7 @@ This will build the backend and frontend images from the Dockerfiles and start a
 docker-compose up -d
 ```
 
-This uses the default `docker-compose.yml` which pulls the pre-built images from the GitHub Container Registry:
-
-* **Postgres** on port `5432`
-* **Backend (Spring Boot)** on port `8081`
-* **Frontend (Angular + Nginx)** on port `4200` → available at [http://localhost:4200](http://localhost:4200)
-
-> If you want to make sure you have the latest images, you can manually pull them first:
->
-> ```bash
-> docker pull ghcr.io/ddimitris/simple-bet-backend:latest
-> docker pull ghcr.io/ddimitris/simple-bet-frontend:latest
-> ```
+This uses the default `docker-compose.yml` which pulls the pre-built images from the GitHub Container Registry
 
 ---
 
@@ -251,4 +236,5 @@ The workflow file is located in:
 
 ```
 .github/workflows/maven.yml
+
 ```
