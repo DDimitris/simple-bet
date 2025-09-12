@@ -27,12 +27,16 @@ export class MatchService {
 
   constructor(private http: HttpClient) { }
 
-  getMatches(page = 0, size = 10, sortBy = 'id', direction = 'DESC'): Observable<any> {
+  getMatches(page = 0, size = 10, sortBy = 'id', direction = 'DESC',
+    teamA?: string, teamB?: string, sport?: string): Observable<any> {
     let params = new HttpParams()
       .set('page', page)
       .set('size', size)
       .set('sortBy', sortBy)
       .set('direction', direction);
+    if (teamA) params = params.set('teamA', teamA);
+    if (teamB) params = params.set('teamB', teamB);
+    if (sport) params = params.set('sport', sport);
     return this.http.get<any>(this.apiUrl, { params });
   }
 

@@ -84,12 +84,12 @@ public class MatchService {
 
             if (teamA != null && !teamA.isEmpty()) {
                 predicates = criteriaBuilder.and(predicates,
-                        criteriaBuilder.equal(criteriaBuilder.lower(root.get("teamA")), teamA.toLowerCase()));
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("teamA")), "%" + teamA.toLowerCase() + "%"));
             }
 
             if (teamB != null && !teamB.isEmpty()) {
                 predicates = criteriaBuilder.and(predicates,
-                        criteriaBuilder.equal(criteriaBuilder.lower(root.get("teamB")), teamB.toLowerCase()));
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("teamB")), "%" + teamB.toLowerCase() + "%"));
             }
 
             if (sport != null && !sport.isEmpty()) {

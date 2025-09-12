@@ -3,74 +3,104 @@
 
   <button (click)="goToCreate()" class="btn btn-primary">+ Create Match</button>
 
+  <div class="filters mb-3">
+    <input
+      type="text"
+      placeholder="Team A"
+      [(ngModel)]="filters.teamA"
+      name="teamA"
+      (keyup.enter)="applyFilters()"
+    />
+
+    <input
+      type="text"
+      placeholder="Team B"
+      [(ngModel)]="filters.teamB"
+      name="teamB"
+      (keyup.enter)="applyFilters()"
+    />
+
+    <select [(ngModel)]="filters.sport" name="sport">
+      <option value="">All Sports</option>
+      <option *ngFor="let s of availableSports" [value]="s">{{ s }}</option>
+    </select>
+
+    <button (click)="applyFilters()" class="btn btn-primary btn-sm">
+      Apply Filters
+    </button>
+    <button (click)="clearFilters()" class="btn btn-secondary btn-sm">
+      Clear
+    </button>
+  </div>
+
   <table class="table table-striped mt-3">
     <thead>
-    <tr>
-      <th (click)="sort('description')">
-        Description
-        <span *ngIf="sortBy === 'description'">
+      <tr>
+        <th (click)="sort('description')">
+          Description
+          <span *ngIf="sortBy === 'description'">
             {{ direction === "ASC" ? "▲" : "▼" }}
           </span>
-      </th>
-      <th (click)="sort('teamA')">
-        Team A
-        <span *ngIf="sortBy === 'teamA'">
+        </th>
+        <th (click)="sort('teamA')">
+          Team A
+          <span *ngIf="sortBy === 'teamA'">
             {{ direction === "ASC" ? "▲" : "▼" }}
           </span>
-      </th>
-      <th (click)="sort('teamB')">
-        Team B
-        <span *ngIf="sortBy === 'teamB'">
+        </th>
+        <th (click)="sort('teamB')">
+          Team B
+          <span *ngIf="sortBy === 'teamB'">
             {{ direction === "ASC" ? "▲" : "▼" }}
           </span>
-      </th>
-      <th (click)="sort('matchDate')">
-        Date
-        <span *ngIf="sortBy === 'matchDate'">
+        </th>
+        <th (click)="sort('matchDate')">
+          Date
+          <span *ngIf="sortBy === 'matchDate'">
             {{ direction === "ASC" ? "▲" : "▼" }}
           </span>
-      </th>
-      <th (click)="sort('matchTime')">
-        Time
-        <span *ngIf="sortBy === 'matchTime'">
+        </th>
+        <th (click)="sort('matchTime')">
+          Time
+          <span *ngIf="sortBy === 'matchTime'">
             {{ direction === "ASC" ? "▲" : "▼" }}
           </span>
-      </th>
-      <th (click)="sort('sport')">
-        Sport
-        <span *ngIf="sortBy === 'sport'">
+        </th>
+        <th (click)="sort('sport')">
+          Sport
+          <span *ngIf="sortBy === 'sport'">
             {{ direction === "ASC" ? "▲" : "▼" }}
           </span>
-      </th>
-      <th>Odds</th>
-      <th>Actions</th>
-    </tr>
+        </th>
+        <th>Odds</th>
+        <th>Actions</th>
+      </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let match of matches">
-      <td>{{ match.description }}</td>
-      <td>{{ match.teamA }}</td>
-      <td>{{ match.teamB }}</td>
-      <td>{{ match.matchDate }}</td>
-      <td>{{ match.matchTime }}</td>
-      <td>{{ match.sport }}</td>
-      <td>
-        <div *ngFor="let odd of match.odds">
-          {{ odd.specifier }}: {{ odd.odd }}
-        </div>
-      </td>
-      <td>
-        <button (click)="goToEdit(match.id)" class="btn btn-sm btn-warning">
-          Edit
-        </button>
-        <button
-          (click)="deleteMatch(match.id!)"
-          class="btn btn-sm btn-danger"
-        >
-          Delete
-        </button>
-      </td>
-    </tr>
+      <tr *ngFor="let match of matches">
+        <td>{{ match.description }}</td>
+        <td>{{ match.teamA }}</td>
+        <td>{{ match.teamB }}</td>
+        <td>{{ match.matchDate }}</td>
+        <td>{{ match.matchTime }}</td>
+        <td>{{ match.sport }}</td>
+        <td>
+          <div *ngFor="let odd of match.odds">
+            {{ odd.specifier }}: {{ odd.odd }}
+          </div>
+        </td>
+        <td>
+          <button (click)="goToEdit(match.id)" class="btn btn-sm btn-warning">
+            Edit
+          </button>
+          <button
+            (click)="deleteMatch(match.id!)"
+            class="btn btn-sm btn-danger"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
     </tbody>
   </table>
 
