@@ -31,10 +31,13 @@ public class MatchController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "desc") String direction
+            @RequestParam(defaultValue = "desc") String direction,
+            @RequestParam(required = false) String teamA,
+            @RequestParam(required = false) String teamB,
+            @RequestParam(required = false) String sport
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.valueOf(direction.toUpperCase()), sortBy));
-        Page<MatchResponseDto> matches = matchService.getMatches(pageable);
+        Page<MatchResponseDto> matches = matchService.getMatches(pageable, teamA, teamB, sport);
         return ResponseEntity.ok(matches);
     }
 

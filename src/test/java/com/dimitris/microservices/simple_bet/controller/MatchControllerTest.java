@@ -1,5 +1,6 @@
 package com.dimitris.microservices.simple_bet.controller;
 
+import com.dimitris.microservices.simple_bet.enums.Sport;
 import com.dimitris.microservices.simple_bet.records.MatchRequestDto;
 import com.dimitris.microservices.simple_bet.records.MatchResponseDto;
 import com.dimitris.microservices.simple_bet.service.MatchService;
@@ -15,10 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static com.dimitris.microservices.simple_bet.utils.HelperMethods.MOCK_REQUEST_FOOTBALL;
 import static com.dimitris.microservices.simple_bet.utils.HelperMethods.createMatchResponseDto;
-import static com.dimitris.microservices.simple_bet.utils.HelperMethods.mockRequestContent;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -43,7 +43,7 @@ class MatchControllerTest {
         Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "teamA"));
         Page<MatchResponseDto> matchPage = new PageImpl<>(matches, pageable, matches.size());
 
-        when(matchService.getMatches(any(Pageable.class))).thenReturn(matchPage);
+        when(matchService.getMatches(any(Pageable.class), any(), any(), any())).thenReturn(matchPage);
 
         mockMvc.perform(get("/api/matches")
                         .param("page", "0")
@@ -65,7 +65,7 @@ class MatchControllerTest {
 
         mockMvc.perform(post("/api/matches")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mockRequestContent))
+                        .content(MOCK_REQUEST_FOOTBALL))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.teamA").value("OSFP"))
                 .andExpect(jsonPath("$.teamB").value("PAO"));
@@ -78,7 +78,7 @@ class MatchControllerTest {
 
         mockMvc.perform(post("/api/matches")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mockRequestContent))
+                        .content(MOCK_REQUEST_FOOTBALL))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").value("Match already exists"));
     }
@@ -94,7 +94,7 @@ class MatchControllerTest {
 
         mockMvc.perform(put("/api/matches/{id}", matchId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mockRequestContent))
+                        .content(MOCK_REQUEST_FOOTBALL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.teamA").value("OSFP"))
                 .andExpect(jsonPath("$.teamB").value("PAO"));
@@ -109,7 +109,7 @@ class MatchControllerTest {
 
         mockMvc.perform(put("/api/matches/{id}", matchId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mockRequestContent))
+                        .content(MOCK_REQUEST_FOOTBALL))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Match not found"));
     }
@@ -136,5 +136,26 @@ class MatchControllerTest {
         mockMvc.perform(delete("/api/matches/{id}", matchId))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Match not found"));
+    }
+
+    @Test
+    void testGetMatchesWithFilters_success() throws Exception {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "teamA"));
+        MatchResponseDto dto = createMatchResponseDto(1L, "TeamA", "TeamB");
+
+        Page<MatchResponseDto> page = new PageImpl<>(List.of(dto), pageable, 1);
+        when(matchService.getMatches(any(Pageable.class), eq("TeamA"), isNull(), eq(Sport.BASKETBALL.name())))
+                .thenReturn(page);
+
+        mockMvc.perform(get("/api/matches")
+                        .param("page", "0")
+                        .param("size", "2")
+                        .param("sortBy", "teamA")
+                        .param("direction", "asc")
+                        .param("teamA", "TeamA")
+                        .param("sport", Sport.BASKETBALL.name()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].teamA").value("TeamA"))
+                .andExpect(jsonPath("$.content[0].sport").value(Sport.BASKETBALL.name()));
     }
 }

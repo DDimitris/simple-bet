@@ -4,14 +4,17 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import static com.dimitris.microservices.simple_bet.utils.HelperMethods.mockRequestContent;
+import static com.dimitris.microservices.simple_bet.utils.HelperMethods.MOCK_REQUEST_BASKETBALL;
+import static com.dimitris.microservices.simple_bet.utils.HelperMethods.MOCK_REQUEST_FOOTBALL;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
@@ -26,12 +29,21 @@ class MatchIntegrationTest {
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private JdbcTemplate jdbc;
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         postgres.start();
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
+    }
+
+    @BeforeEach
+    void cleanDb() {
+        jdbc.execute("TRUNCATE TABLE matches_service.matches CASCADE");
+        jdbc.execute("TRUNCATE TABLE matches_service.matches_odds CASCADE");
     }
 
     @BeforeEach
@@ -45,7 +57,7 @@ class MatchIntegrationTest {
         // create
         given()
                 .contentType("application/json")
-                .body(mockRequestContent)
+                .body(MOCK_REQUEST_FOOTBALL)
                 .when()
                 .post("/api/matches")
                 .then()
@@ -67,7 +79,7 @@ class MatchIntegrationTest {
         Integer matchId =
                 given()
                         .contentType("application/json")
-                        .body(mockRequestContent)
+                        .body(MOCK_REQUEST_FOOTBALL)
                         .when()
                         .post("/api/matches")
                         .then()
@@ -77,19 +89,19 @@ class MatchIntegrationTest {
 
         // update
         String updateRequest = """
-        {
-            "teamA": "AEK",
-            "teamB": "PAO",
-            "matchDate": "2025-10-10",
-            "matchTime": "20:00:00",
-            "sport": "FOOTBALL",
-            "odds": [
-                {"specifier":"1","odd":1.5},
-                {"specifier":"X","odd":2.5},
-                {"specifier":"2","odd":3.5}
-            ]
-        }
-        """;
+                {
+                    "teamA": "AEK",
+                    "teamB": "PAO",
+                    "matchDate": "2025-10-10",
+                    "matchTime": "20:00:00",
+                    "sport": "FOOTBALL",
+                    "odds": [
+                        {"specifier":"1","odd":1.5},
+                        {"specifier":"X","odd":2.5},
+                        {"specifier":"2","odd":3.5}
+                    ]
+                }
+                """;
 
         given()
                 .contentType("application/json")
@@ -108,7 +120,7 @@ class MatchIntegrationTest {
         Integer matchId =
                 given()
                         .contentType("application/json")
-                        .body(mockRequestContent)
+                        .body(MOCK_REQUEST_FOOTBALL)
                         .when()
                         .post("/api/matches")
                         .then()
@@ -129,6 +141,36 @@ class MatchIntegrationTest {
                 .delete("/api/matches/{id}", matchId)
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    void testFilterMatchesBySport_Success() {
+        // create matches
+        given()
+                .contentType("application/json")
+                .body(MOCK_REQUEST_FOOTBALL)
+                .when()
+                .post("/api/matches")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+
+
+        given()
+                .contentType("application/json")
+                .body(MOCK_REQUEST_BASKETBALL)
+                .when()
+                .post("/api/matches")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+
+        // filter only football
+        given()
+                .when()
+                .get("/api/matches?page=0&size=5&sport=FOOTBALL")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("content.size()", is(1))
+                .body("content[0].sport", is("FOOTBALL"));
     }
 
 }

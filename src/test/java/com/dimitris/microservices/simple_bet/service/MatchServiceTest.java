@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,6 +23,7 @@ import java.util.Optional;
 import static com.dimitris.microservices.simple_bet.utils.HelperMethods.createMatch;
 import static com.dimitris.microservices.simple_bet.utils.HelperMethods.createMatchRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @Tag("unit")
@@ -63,9 +65,9 @@ class MatchServiceTest {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<Match> matchPage = new PageImpl<>(matches, pageable, matches.size());
 
-        when(matchRepository.findAll(any(Pageable.class))).thenReturn(matchPage);
+        when(matchRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(matchPage);
 
-        Page<MatchResponseDto> matches1 = matchService.getMatches(pageable);
+        Page<MatchResponseDto> matches1 = matchService.getMatches(pageable, null, null, null);
 
         assertThat(!matches1.isEmpty()).isTrue();
         assertThat(matches1.getSize()).isEqualTo(2);
@@ -116,6 +118,21 @@ class MatchServiceTest {
 
         assertThat(voidDbResponse.isSuccess()).isTrue();
         verify(matchRepository).delete(match);
+    }
+
+    @Test
+    void testGetMatchesWithTeamFilter_success() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Match match = createMatch(1L, "TeamA", "TeamB");
+        Page<Match> matchPage = new PageImpl<>(List.of(match));
+
+        when(matchRepository.findAll(any(Specification.class), eq(pageable)))
+                .thenReturn(matchPage);
+
+        Page<MatchResponseDto> result = matchService.getMatches(pageable, "TeamA", null, Sport.BASKETBALL.name());
+
+        assertEquals(1, result.getTotalElements());
+        assertEquals("TeamA", result.getContent().getFirst().teamA());
     }
 
 }

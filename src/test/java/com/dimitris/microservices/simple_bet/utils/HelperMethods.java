@@ -12,7 +12,7 @@ import java.util.List;
 
 public class HelperMethods {
 
-    public static final String mockRequestContent = """
+    public static final String MOCK_REQUEST_FOOTBALL = """
             {
               "description": "Final",
               "matchDate": "2025-10-15",
@@ -20,6 +20,31 @@ public class HelperMethods {
               "teamA": "Olimpiakos",
               "teamB": "Panathinaikos",
               "sport": "football",
+              "odds": [
+                {
+                  "specifier": "1",
+                  "odd": 1.50
+                },
+                {
+                  "specifier": "X",
+                  "odd": 3.20
+                },
+                {
+                  "specifier": "2",
+                  "odd": 2.10
+                }
+              ]
+            }
+            """;
+
+    public static final String MOCK_REQUEST_BASKETBALL = """
+            {
+              "description": "Final",
+              "matchDate": "2025-10-15",
+              "matchTime": "20:30",
+              "teamA": "AEK",
+              "teamB": "PAOK",
+              "sport": "basketball",
               "odds": [
                 {
                   "specifier": "1",
